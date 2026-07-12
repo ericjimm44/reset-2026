@@ -213,7 +213,7 @@ button { font-family: inherit; }
 .r26-mini:hover { background: var(--ink); color: var(--washi); }
 .r26-toggle { border: none; border-radius: 16px; padding: 8px 16px; font-size: 13px; cursor: pointer; background: rgba(216, 210, 196, 0.4); color: var(--sub); transition: all 0.18s; }
 .r26-toggle.on { background: var(--ink); color: var(--washi); }
-.r26-chip { border: none; border-radius: 18px; padding: 8px 14px; font-size: 12px; cursor: pointer; background: rgba(216, 210, 196, 0.4); color: var(--sub); transition: all 0.18s; }
+.r26-chip { border: none; border-radius: 20px; padding: 12px 16px; min-height: 44px; font-size: 12px; cursor: pointer; background: rgba(216, 210, 196, 0.4); color: var(--sub); transition: all 0.18s; }
 .r26-chip.on { background: var(--ink); color: var(--washi); }
 .r26-pick { border: 1.4px solid var(--line); background: none; border-radius: 22px; padding: 10px 24px; font-size: 13.5px; cursor: pointer; transition: all 0.18s; }
 .r26-nav { width: 44px; height: 44px; border: none; background: var(--card); color: var(--ink); border-radius: 22px; font-size: 20px; cursor: pointer; flex-shrink: 0; box-shadow: var(--lift); }
