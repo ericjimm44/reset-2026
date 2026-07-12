@@ -1,3 +1,9 @@
+/* ————————————————————————————————————————————————
+   Jimmy's 2026 Reset — ensō redesign
+   Washi paper + sumi ink + moss. Calm is structural:
+   whitespace separates, borders almost never do.
+   ———————————————————————————————————————————————— */
+
 :root {
   --washi: #E9E5DB;
   --card: #F3F0E8;
@@ -9,76 +15,262 @@
   --moss-deep: #525E3A;
   --indigo: #3C5470;
   --seal: #9C4B3C;
+
+  --serif: "Playfair Display", Georgia, serif;
+  --sans: "Inter", "Helvetica Neue", system-ui, sans-serif;
+
+  /* One soft paper shadow everywhere. Never harder than this. */
+  --lift: 0 1px 2px rgba(38, 37, 33, 0.05), 0 6px 20px rgba(38, 37, 33, 0.06);
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { margin: 0; background: var(--washi); }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--washi);
+  color: var(--ink);
+  font-family: var(--sans);
+}
+button { font-family: inherit; }
+
+/* ————— type roles ————— */
 
 .r26-wordmark { font-size: 11px; letter-spacing: 4px; color: var(--moss-deep); font-weight: 600; }
-.r26-eyebrow { font-size: 10.5px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--faint); }
-.r26-headline { font-family: Georgia, serif; font-size: 18px; color: var(--ink); }
+.r26-eyebrow { font-size: 10.5px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--faint); font-weight: 500; }
+.r26-headline { font-family: var(--serif); font-size: 19px; color: var(--ink); }
 
-.r26-tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 4px; margin-top: 16px; }
-.r26-tab { flex: 1; border: none; border-radius: 20px; padding: 8px 0; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; cursor: pointer; font-family: inherit; transition: background .2s, color .2s; }
+/* Ceremonial serif — greetings, questions, big numbers. */
+.r26-serif { font-family: var(--serif); color: var(--ink); }
+.r26-greeting { font-family: var(--serif); font-size: 24px; color: var(--ink); line-height: 1.3; }
+.r26-caption { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--sub); }
 
-.r26-nav { width: 40px; height: 40px; border: 1px solid var(--line); background: none; color: var(--ink); border-radius: 20px; font-size: 20px; cursor: pointer; font-family: inherit; flex-shrink: 0; }
-.r26-nav:hover:not(:disabled) { border-color: var(--ink); }
+/* ————— surfaces ————— */
 
-.r26-strip { display: flex; gap: 6px; justify-content: center; margin: 12px 0; }
-.r26-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 8px; margin-bottom: 14px; }
-.r26-grouphead { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--moss-deep); margin-bottom: 10px; }
+/* Soft card: washi-on-washi, no border, one shadow. */
+.r26-card {
+  background: var(--card);
+  border: none;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--lift);
+}
 
-/* The One Rule card — the anti-overwhelm device */
-.r26-rule { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--indigo); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
-.r26-nextbox { display: flex; align-items: center; gap: 12px; width: 100%; background: var(--washi); border: 1px solid var(--line); border-radius: 10px; padding: 12px; cursor: pointer; font-family: inherit; }
-.r26-nextbox:hover { border-color: var(--indigo); }
+.r26-grouphead { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--moss-deep); margin-bottom: 10px; font-weight: 500; }
 
-.r26-kids { display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; }
-.r26-toggle { border: 1px solid var(--line); border-radius: 16px; padding: 5px 14px; font-size: 12.5px; cursor: pointer; font-family: inherit; transition: all .18s; }
+/* ————— hub (Home) ————— */
 
-.r26-row { display: flex; align-items: flex-start; gap: 12px; width: 100%; background: none; border: none; padding: 9px 0; cursor: pointer; border-bottom: 1px solid var(--washi); }
-.r26-row:last-child { border-bottom: none; }
-.r26-box { flex-shrink: 0; width: 22px; height: 22px; border: 1.6px solid var(--line); border-radius: 7px; display: flex; align-items: center; justify-content: center; background: none; cursor: pointer; padding: 0; transition: background .18s, border-color .18s; }
-.r26-coreitem { border-bottom: 1px solid var(--washi); }
-.r26-coreitem:last-child { border-bottom: none; }
+.r26-hub { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+/* The single suggested next step. The One Rule, embodied. */
+.r26-nextstep {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; min-height: 64px;
+  background: var(--card);
+  border: none; border-radius: 16px;
+  padding: 14px 16px;
+  cursor: pointer;
+  box-shadow: var(--lift);
+  text-align: left;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.r26-nextstep:active { transform: scale(0.985); }
+
+/* Quiet menu row into a deeper moment. */
+.r26-moment {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; min-height: 52px;
+  background: none; border: none;
+  padding: 13px 6px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14.5px; color: var(--ink);
+}
+.r26-moment + .r26-moment { border-top: 1px solid rgba(216, 210, 196, 0.45); }
+.r26-moment .chev { margin-left: auto; color: var(--faint); }
+
+/* ————— spoke screens ————— */
+
+.r26-screen { animation: r26-fadein 0.35s ease both; }
+.r26-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 8px 6px;
+  background: none; border: none; cursor: pointer;
+  font-size: 13px; color: var(--sub);
+}
+.r26-back:hover { color: var(--ink); }
+
+/* Full-width return button at the bottom of every moment. */
+.r26-return {
+  display: block; width: 100%;
+  min-height: 48px; margin-top: 18px;
+  background: rgba(108, 122, 79, 0.16);
+  color: var(--moss-deep);
+  border: none; border-radius: 12px;
+  font-size: 13.5px; cursor: pointer;
+}
+.r26-return:hover { background: rgba(108, 122, 79, 0.24); }
+
+/* ————— checklist ————— */
+
+.r26-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  width: 100%; background: none; border: none;
+  padding: 12px 0; min-height: 48px;
+  cursor: pointer; text-align: left;
+}
+.r26-box {
+  flex-shrink: 0; width: 24px; height: 24px;
+  border: 1.6px solid var(--line); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; cursor: pointer; padding: 0;
+  transition: background 0.18s, border-color 0.18s;
+}
 .r26-tag { font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--faint); align-self: center; margin-left: 8px; white-space: nowrap; }
-.r26-grat { padding: 0 0 10px 34px; display: flex; flex-direction: column; gap: 7px; }
+.r26-grat { padding: 0 0 12px 36px; display: flex; flex-direction: column; gap: 8px; }
 
-.r26-sechead { display: flex; align-items: center; justify-content: space-between; width: 100%; background: none; border: none; padding: 2px 0; cursor: pointer; font-family: inherit; }
-.r26-reflabel { display: block; font-size: 12.5px; color: var(--sub); margin-bottom: 5px; }
-.r26-text { width: 100%; border: 1px solid var(--line); border-radius: 9px; background: var(--washi); padding: 9px 10px; font-size: 14px; color: var(--ink); font-family: inherit; resize: vertical; }
-.r26-text:focus { outline: none; border-color: var(--moss); }
-.r26-input { border: none; border-bottom: 1px solid var(--line); background: none; font-size: 13.5px; color: var(--ink); padding: 5px 2px; font-family: inherit; }
+/* ————— inputs ————— */
+
+.r26-text {
+  width: 100%; border: none; border-radius: 12px;
+  background: var(--washi);
+  padding: 12px; font-size: 14px; color: var(--ink);
+  font-family: inherit; resize: vertical;
+  box-shadow: inset 0 1px 3px rgba(38, 37, 33, 0.06);
+}
+.r26-text:focus { outline: 2px solid rgba(108, 122, 79, 0.45); outline-offset: 0; }
+.r26-input {
+  border: none; border-bottom: 1px solid var(--line);
+  background: none; font-size: 14px; color: var(--ink);
+  padding: 8px 2px; font-family: inherit;
+}
 .r26-input:focus { outline: none; border-bottom-color: var(--moss); }
+.r26-reflabel { display: block; font-size: 13px; color: var(--sub); margin-bottom: 6px; }
 
+/* ————— dots (ratings, trends, year) ————— */
+
+.r26-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1.4px solid var(--line); background: none;
+  padding: 0; cursor: pointer; flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.r26-dot.on { background: var(--moss); border-color: var(--moss); }
+.r26-dot.on.indigo { background: var(--indigo); border-color: var(--indigo); }
+/* Bigger touch area without bigger dot. */
+.r26-dothit {
+  width: 28px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; padding: 0; cursor: pointer;
+}
+
+/* ————— seal ————— */
+
+.r26-sealbtn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; min-height: 52px; margin-top: 16px;
+  border: none; border-radius: 14px;
+  background: var(--moss-deep); color: #F3F0E8;
+  font-size: 14px; letter-spacing: 0.5px;
+  cursor: pointer; box-shadow: var(--lift);
+}
+.r26-sealbtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* The hanko stamp. */
+.r26-stamp {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--seal); color: #F6EFE6;
+  font-size: 17px; line-height: 1;
+  font-family: var(--serif);
+}
+
+/* Full-screen ceremony. */
+.r26-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: var(--washi);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 32px 28px; text-align: center;
+  animation: r26-fadein 0.5s ease both;
+}
+.r26-stamp-big {
+  width: 76px; height: 76px; border-radius: 50%;
+  background: var(--seal); color: #F6EFE6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; font-family: var(--serif);
+  box-shadow: 0 2px 10px rgba(156, 75, 60, 0.35);
+  animation: r26-stamp 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) 1.3s both;
+}
+
+/* Ensō drawing stroke inside the ceremony. */
+.r26-enso-draw { animation: r26-draw 1.5s ease-out both; }
+
+/* ————— shared small controls ————— */
+
+.r26-link { background: none; border: none; color: var(--faint); font-size: 12px; text-decoration: underline; cursor: pointer; padding: 6px 2px; }
+.r26-link:hover { color: var(--ink); }
+.r26-mini { border: 1px solid var(--ink); background: none; color: var(--ink); border-radius: 10px; padding: 9px 18px; font-size: 12.5px; cursor: pointer; }
+.r26-mini:hover { background: var(--ink); color: var(--washi); }
+.r26-toggle { border: none; border-radius: 16px; padding: 8px 16px; font-size: 13px; cursor: pointer; background: rgba(216, 210, 196, 0.4); color: var(--sub); transition: all 0.18s; }
+.r26-toggle.on { background: var(--ink); color: var(--washi); }
+.r26-chip { border: none; border-radius: 18px; padding: 8px 14px; font-size: 12px; cursor: pointer; background: rgba(216, 210, 196, 0.4); color: var(--sub); transition: all 0.18s; }
+.r26-chip.on { background: var(--ink); color: var(--washi); }
+.r26-pick { border: 1.4px solid var(--line); background: none; border-radius: 22px; padding: 10px 24px; font-size: 13.5px; cursor: pointer; transition: all 0.18s; }
+.r26-nav { width: 44px; height: 44px; border: none; background: var(--card); color: var(--ink); border-radius: 22px; font-size: 20px; cursor: pointer; flex-shrink: 0; box-shadow: var(--lift); }
+.r26-nav:disabled { opacity: 0.25; cursor: default; }
+
+.r26-stats { display: flex; justify-content: space-around; width: 100%; margin-top: 22px; padding: 16px 0 4px; border-top: 1px solid rgba(216, 210, 196, 0.5); }
+.r26-stats div { text-align: center; }
+.r26-stats b { display: block; font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--ink); }
+.r26-stats span { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--faint); }
+
+.r26-bar { height: 5px; background: rgba(216, 210, 196, 0.5); border-radius: 5px; overflow: hidden; }
+.r26-mantra { font-family: var(--serif); font-style: italic; font-size: 14.5px; line-height: 1.6; color: var(--sub); text-align: center; padding: 8px 14px; margin: 20px 0 0; }
+.r26-err { font-size: 12px; color: var(--seal); text-align: center; margin-top: 10px; }
 .r26-question { text-align: center; margin: 4px 0 8px; }
-.r26-question em { font-family: Georgia, serif; font-size: 16px; color: var(--ink); line-height: 1.5; }
-.r26-yesno { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
-.r26-pick { border: 1.4px solid var(--line); border-radius: 22px; padding: 8px 22px; font-size: 13.5px; font-family: inherit; cursor: pointer; transition: all .18s; }
-.r26-seal { width: 100%; margin-top: 14px; padding: 13px; border: none; border-radius: 11px; background: var(--ink); color: var(--washi); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; font-family: inherit; }
+.r26-question em { font-family: var(--serif); font-size: 17px; color: var(--ink); line-height: 1.55; }
+.r26-yesno { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }
+
+/* ————— legacy classes still used by Path/Log/Year/Trends until their restyle ————— */
+
+/* Removed in Phase 2 when App/Today are rewritten: */
+.r26-tabs { display: flex; gap: 4px; background: var(--card); border-radius: 24px; padding: 4px; margin-top: 16px; box-shadow: var(--lift); }
+.r26-tab { flex: 1; border: none; border-radius: 20px; padding: 10px 0; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.r26-rule { background: var(--card); border-left: 3px solid var(--indigo); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; box-shadow: var(--lift); }
+.r26-nextbox { display: flex; align-items: center; gap: 12px; width: 100%; background: var(--washi); border: none; border-radius: 12px; padding: 12px; cursor: pointer; }
+.r26-kids { display: flex; align-items: center; justify-content: space-between; background: var(--card); border-radius: 14px; padding: 10px 14px; margin-bottom: 14px; box-shadow: var(--lift); }
+.r26-strip { display: flex; gap: 6px; justify-content: center; margin: 12px 0; }
+.r26-sealbig { width: 100%; margin-top: 14px; padding: 13px; border: none; border-radius: 11px; background: var(--ink); color: var(--washi); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+
+.r26-sechead { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; background: none; border: none; padding: 2px 0; cursor: pointer; }
+.r26-scaledot { flex: 1; height: 24px; border: 1.4px solid var(--line); border-radius: 6px; background: none; cursor: pointer; padding: 0; transition: background 0.15s; }
+.r26-logrow { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(216, 210, 196, 0.4); }
+.r26-logrow:last-child { border-bottom: none; }
+.r26-x { border: none; background: none; color: var(--faint); font-size: 18px; cursor: pointer; line-height: 1; padding: 8px; }
+.r26-x:hover { color: var(--seal); }
+.r26-step { border: 1px solid var(--line); background: none; color: var(--sub); width: 28px; height: 28px; border-radius: 8px; font-size: 14px; cursor: pointer; line-height: 1; }
+.r26-step:hover { border-color: var(--ink); color: var(--ink); }
+.r26-seal { width: 100%; margin-top: 14px; padding: 14px; border: none; border-radius: 12px; background: var(--ink); color: var(--washi); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
 .r26-seal:disabled { cursor: not-allowed; }
 .r26-sealed { background: none; border: 1px solid var(--moss); color: var(--moss-deep); letter-spacing: 1px; text-transform: none; font-size: 12.5px; }
+.r26-coreitem { border-bottom: 1px solid rgba(233, 229, 219, 0.9); }
+.r26-coreitem:last-child { border-bottom: none; }
 
-.r26-mantra { font-family: Georgia, serif; font-style: italic; font-size: 14px; line-height: 1.6; color: var(--sub); text-align: center; padding: 8px 14px; margin: 18px 0 0; }
-.r26-stats { display: flex; justify-content: space-around; margin-top: 18px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.r26-stats div { text-align: center; }
-.r26-stats b { display: block; font-family: Georgia, serif; font-size: 24px; font-weight: 400; color: var(--ink); }
-.r26-stats span { font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--faint); }
+/* ————— motion ————— */
 
-.r26-bar { height: 5px; background: var(--washi); border-radius: 5px; overflow: hidden; }
-.r26-scaledot { flex: 1; height: 22px; border: 1.4px solid var(--line); border-radius: 5px; background: none; cursor: pointer; padding: 0; transition: background .15s; }
-.r26-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-.r26-chip { border: 1px solid var(--line); border-radius: 18px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .18s; }
+@keyframes r26-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes r26-draw {
+  from { stroke-dashoffset: var(--enso-circ, 400); }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes r26-stamp {
+  from { opacity: 0; transform: scale(1.6); }
+  to { opacity: 1; transform: scale(1); }
+}
 
-.r26-err { font-size: 12px; color: var(--seal); text-align: center; margin-top: 10px; }
-.r26-link { background: none; border: none; color: var(--faint); font-size: 12px; text-decoration: underline; cursor: pointer; font-family: inherit; }
-.r26-link:hover { color: var(--ink); }
-.r26-mini { border: 1px solid var(--ink); background: none; color: var(--ink); border-radius: 8px; padding: 7px 16px; font-size: 12.5px; cursor: pointer; font-family: inherit; }
-.r26-mini:hover { background: var(--ink); color: var(--washi); }
-.r26-logrow { display: flex; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--washi); }
-.r26-x { border: none; background: none; color: var(--faint); font-size: 18px; cursor: pointer; line-height: 1; padding: 0 4px; }
-.r26-x:hover { color: var(--seal); }
-.r26-step { border: 1px solid var(--line); background: none; color: var(--sub); width: 22px; height: 22px; border-radius: 6px; font-size: 14px; cursor: pointer; line-height: 1; font-family: inherit; }
-.r26-step:hover { border-color: var(--ink); color: var(--ink); }
-
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation-duration: 0.01ms !important; animation-delay: 0s !important; }
+}
