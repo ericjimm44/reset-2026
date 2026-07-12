@@ -13,6 +13,7 @@ import Reflect from "./components/screens/Reflect";
 import Rate from "./components/screens/Rate";
 import Guidance from "./components/screens/Guidance";
 import Why from "./components/screens/Why";
+import Settings from "./components/screens/Settings";
 import Trends from "./components/Trends";
 import Path from "./components/Path";
 import Log from "./components/Log";
@@ -24,8 +25,6 @@ export default function App() {
   const [data, setData] = useState(emptyState);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(null);
-  const [confirmReset, setConfirmReset] = useState(false);
-  const [backup, setBackup] = useState(null);
   const timer = useRef(null);
 
   const now = new Date();
@@ -139,7 +138,7 @@ export default function App() {
   const greeting = hour < 5 ? "Late night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   const eveningReady = remaining.length === 0 || hour >= 19;
 
-  const doReset = () => { const f = emptyState(); setData(f); save(f); setConfirmReset(false); };
+  const doReset = () => { const f = emptyState(); setData(f); save(f); };
   const goHome = () => setScreen("home");
 
   if (!ready) {
@@ -168,6 +167,12 @@ export default function App() {
         {screen === "rate" && <Rate today={today} setRating={dayActions.setRating} onBack={goHome} />}
         {screen === "guidance" && <Guidance dayNum={dayNum} onBack={goHome} />}
         {screen === "why" && <Why onBack={goHome} />}
+        {screen === "settings" && (
+          <Settings onBack={goHome}
+            onExport={() => exportData(data)}
+            onImport={(text) => setData(importData(text))}
+            onReset={doReset} />
+        )}
 
         {screen === "trends" && (
           <Screen title="Trends" sub="Your weeks, at a glance." onBack={goHome}>
@@ -202,38 +207,9 @@ export default function App() {
         {error && <p className="r26-err">{error}</p>}
 
         {screen === "home" && (
-          <>
-            <div style={{ textAlign: "center", marginTop: 18, display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-              <button className="r26-link" onClick={() => setBackup(exportData(data))}>Backup &amp; restore</button>
-              {confirmReset ? (
-                <span style={{ fontSize: 12.5, color: C.sub }}>
-                  Erase everything? <button className="r26-link" onClick={doReset}>Yes</button>
-                  {" · "}<button className="r26-link" onClick={() => setConfirmReset(false)}>Keep it</button>
-                </span>
-              ) : (
-                <button className="r26-link" onClick={() => setConfirmReset(true)}>Reset</button>
-              )}
-            </div>
-
-            {backup !== null && (
-              <div className="r26-card" style={{ marginTop: 14 }}>
-                <div className="r26-grouphead">Backup &amp; restore</div>
-                <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0 }}>
-                  Data lives on this device only. Copy this somewhere safe; paste it back to restore or move devices.
-                </p>
-                <textarea className="r26-text" rows={4} value={backup} onChange={(e) => setBackup(e.target.value)}
-                  style={{ fontFamily: "monospace", fontSize: 11 }} />
-                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-                  <button className="r26-mini" onClick={() => navigator.clipboard?.writeText(backup)}>Copy</button>
-                  <button className="r26-mini" onClick={() => {
-                    try { setData(importData(backup)); setBackup(null); }
-                    catch { setError("That backup couldn't be read. Check it was pasted whole."); }
-                  }}>Restore</button>
-                  <button className="r26-mini" style={{ marginLeft: "auto" }} onClick={() => setBackup(null)}>Close</button>
-                </div>
-              </div>
-            )}
-          </>
+          <div style={{ textAlign: "center", marginTop: 10 }}>
+            <button className="r26-link" onClick={() => setScreen("settings")}>Settings · backup &amp; restore</button>
+          </div>
         )}
       </div>
     </div>

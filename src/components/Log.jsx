@@ -26,7 +26,7 @@ export default function Log({ logs, today, actions }) {
           <section key={t.key} className="r26-card">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
               <div className="r26-grouphead" style={{ marginBottom: 0 }}>{t.label}</div>
-              <span style={{ fontFamily: "Georgia,serif", fontSize: 18, color: C.ink }}>
+              <span style={{ fontFamily: "var(--serif)", fontSize: 18, color: C.ink }}>
                 {n}<span style={{ fontSize: 12, color: C.faint }}> / {t.target}</span>
               </span>
             </div>

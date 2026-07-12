@@ -33,7 +33,7 @@ export default function Path({ data, now, actions }) {
         <button className="r26-nav" onClick={() => prev && setPathWeek(prev.n)} disabled={!prev} style={{ opacity: prev ? 1 : 0.25 }}>‹</button>
         <div style={{ textAlign: "center" }}>
           <div className="r26-eyebrow">Week {wk.n} of {TOTAL_WEEKS} · {wk.month}</div>
-          <div style={{ fontFamily: "Georgia,serif", fontSize: 18, color: C.ink, marginTop: 2 }}>{wk.theme}</div>
+          <div style={{ fontFamily: "var(--serif)", fontSize: 18, color: C.ink, marginTop: 2 }}>{wk.theme}</div>
           <div style={{ fontSize: 11.5, color: C.faint, marginTop: 3 }}>{fmt(wkStart)} – {fmt(wkEnd)}</div>
           {book && <div style={{ fontSize: 12.5, color: C.mossDeep, marginTop: 3 }}>{book}</div>}
         </div>
@@ -121,7 +121,7 @@ export default function Path({ data, now, actions }) {
         </div>
 
         {next && (
-          <button className="r26-seal" style={{ marginTop: 14 }} onClick={() => setPathWeek(next.n)}>
+          <button className="r26-return" style={{ marginTop: 14 }} onClick={() => setPathWeek(next.n)}>
             Move to Week {next.n} →
           </button>
         )}
@@ -167,7 +167,7 @@ export default function Path({ data, now, actions }) {
                     {label}
                     {inv && <span style={{ color: C.faint }}> · lower is better</span>}
                   </span>
-                  <span style={{ fontSize: 13, color: C.mossDeep, fontFamily: "Georgia,serif" }}>{scores[k] || "–"}</span>
+                  <span style={{ fontSize: 13, color: C.mossDeep, fontFamily: "var(--serif)" }}>{scores[k] || "–"}</span>
                 </div>
                 <Scale value={scores[k]} onSet={(n) => setPathScore(ym, k, n)} invert={inv} />
               </div>

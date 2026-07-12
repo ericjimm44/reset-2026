@@ -55,12 +55,14 @@ export function SecHead({ label, count, open, onClick }) {
   );
 }
 
+// 1–10 as ten quiet dots. Same language as Rate Your Day.
 export function Scale({ value, onSet, invert }) {
   return (
-    <div style={{ display: "flex", gap: 4 }}>
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-        <button key={n} onClick={() => onSet(n)} className="r26-scaledot"
-          style={{ background: value && n <= value ? (invert ? C.indigo : C.moss) : "transparent", borderColor: value && n <= value ? (invert ? C.indigo : C.moss) : C.line }} />
+        <button key={n} onClick={() => onSet(n)} className="r26-dothit" aria-label={`${n} of 10`}>
+          <span className={`r26-dot${value && n <= value ? ` on${invert ? " indigo" : ""}` : ""}`} />
+        </button>
       ))}
     </div>
   );
