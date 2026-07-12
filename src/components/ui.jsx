@@ -66,36 +66,4 @@ export function Scale({ value, onSet, invert }) {
   );
 }
 
-// The ensō — fills as the day fills, closes moss-green when sealed.
-export function Ring({ pct, closed, streak, loading, sub }) {
-  const R = 62;
-  const CIRC = 2 * Math.PI * R;
-  const shown = closed ? 1 : Math.max(pct, loading ? 0 : 0.02);
-  return (
-    <div style={{ position: "relative", width: 160, height: 160 }}>
-      <svg width="160" height="160" viewBox="0 0 160 160" style={{ transform: "rotate(-92deg)" }}>
-        <defs>
-          <filter id="brush">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n" />
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" />
-          </filter>
-        </defs>
-        <circle cx="80" cy="80" r={R} fill="none" stroke={C.line} strokeWidth="2" opacity="0.55" />
-        <circle cx="80" cy="80" r={R} fill="none" stroke={closed ? C.moss : C.ink} strokeWidth="5.5" strokeLinecap="round"
-          strokeDasharray={`${CIRC * shown} ${CIRC}`} filter="url(#brush)"
-          style={{ transition: "stroke-dasharray .55s ease, stroke .4s" }} />
-      </svg>
-      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        {loading ? (
-          <span style={{ fontSize: 12, color: C.faint, letterSpacing: 2 }}>…</span>
-        ) : (
-          <>
-            <span style={{ fontFamily: "Georgia, serif", fontSize: 40, color: C.ink, lineHeight: 1 }}>{streak}</span>
-            <span style={{ fontSize: 10.5, color: C.faint, letterSpacing: 2, textTransform: "uppercase", marginTop: 3 }}>{sub || "day streak"}</span>
-            {closed && <span style={{ fontSize: 16, color: C.seal, marginTop: 2 }}>✦</span>}
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
+// (The old Ring lived here — replaced by components/Enso.jsx.)

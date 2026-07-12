@@ -1,38 +1,51 @@
 import { C } from "../lib/theme";
 import { YEAR, YEAR_TOTAL } from "../data/goals";
 import { START, END, dayKey, daysBetween, addDays } from "../lib/dates";
-import { Check, Row, Ring } from "./ui";
+import { Check, Row } from "./ui";
 
-function MonthHistory({ days, now }) {
-  const stats = [6, 7, 8, 9, 10, 11].map((m) => {
-    const first = new Date(2026, m, 1);
-    const last = new Date(2026, m + 1, 0);
-    const start = first < START ? START : first;
-    const end = now < last ? now : last;
-    let elapsed = 0, sealed = 0;
-    if (end >= start) {
-      elapsed = daysBetween(start, end) + 1;
-      for (let i = 0; i < elapsed; i++) {
-        if (days[dayKey(addDays(start, i))]?.closed) sealed++;
-      }
-    }
-    return { name: first.toLocaleString("en-US", { month: "short" }), elapsed, sealed, future: end < start };
+/*
+  The whole reset at a glance: 175 days as dots, one row per month.
+  Sealed days fill in moss. Nothing shames the empty ones.
+*/
+function DayDots({ days, now }) {
+  const tk = dayKey(now);
+  const months = [];
+  for (let d = new Date(START); d <= END; d = addDays(d, 1)) {
+    const m = d.toLocaleString("en-US", { month: "short" });
+    if (!months.length || months[months.length - 1].name !== m) months.push({ name: m, days: [] });
+    const k = dayKey(d);
+    months[months.length - 1].days.push({
+      k,
+      sealed: !!days[k]?.closed,
+      isToday: k === tk,
+      future: d > now,
+    });
+  }
+
+  const dot = (d) => ({
+    width: 10, height: 10, borderRadius: 10, flexShrink: 0,
+    background: d.sealed ? C.moss : d.isToday ? "rgba(108,122,79,0.35)" : "transparent",
+    border: d.sealed ? `1px solid ${C.moss}` : d.isToday ? "1px solid rgba(108,122,79,0.5)" : `1px solid ${d.future ? "rgba(216,210,196,0.6)" : C.line}`,
   });
 
   return (
     <section className="r26-card">
-      <div className="r26-grouphead">Momentum by month</div>
-      {stats.map((s, i) => (
-        <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
-          <span style={{ width: 34, fontSize: 12, color: C.sub }}>{s.name}</span>
-          <div className="r26-bar" style={{ flex: 1 }}>
-            <div style={{ width: s.elapsed ? `${(s.sealed / s.elapsed) * 100}%` : "0%", height: "100%", background: C.moss, transition: "width .4s" }} />
+      <div className="r26-grouphead">2026 Reset · {daysBetween(START, END) + 1} days</div>
+      {months.map((m) => (
+        <div key={m.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 0" }}>
+          <span style={{ width: 30, fontSize: 11, color: C.faint, letterSpacing: 0.5 }}>{m.name}</span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 3.5, flex: 1 }}>
+            {m.days.map((d) => <span key={d.k} style={dot(d)} />)}
           </div>
-          <span style={{ width: 52, textAlign: "right", fontSize: 11.5, color: s.future ? C.faint : C.sub }}>
-            {s.future ? "—" : `${s.sealed}/${s.elapsed}`}
-          </span>
         </div>
       ))}
+      <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 12 }}>
+        {[["Sealed", C.moss, C.moss], ["Today", "rgba(108,122,79,0.35)", "rgba(108,122,79,0.5)"], ["Open", "transparent", C.line]].map(([l, bg, bc]) => (
+          <span key={l} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: C.sub }}>
+            <span style={{ width: 9, height: 9, borderRadius: 9, background: bg, border: `1px solid ${bc}` }} />{l}
+          </span>
+        ))}
+      </div>
     </section>
   );
 }
@@ -44,14 +57,11 @@ export default function Year({ data, now, workout, goalDone, yearChecked, onTogg
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "center", margin: "14px 0 4px" }}>
-        <Ring pct={yearChecked / YEAR_TOTAL} closed={false} streak={yearChecked} sub={`of ${YEAR_TOTAL}`} />
-      </div>
-      <div style={{ textAlign: "center", marginBottom: 12 }}>
+      <div style={{ textAlign: "center", marginBottom: 14 }}>
         <span className="r26-eyebrow">{yearChecked} of {YEAR_TOTAL} milestones · {daysLeft} days left</span>
       </div>
 
-      <MonthHistory days={data.days} now={now} />
+      <DayDots days={data.days} now={now} />
 
       {YEAR.map((cat) => {
         const done = cat.goals.filter((g, i) => goalDone(cat.label, i, g)).length;
@@ -78,7 +88,7 @@ export default function Year({ data, now, workout, goalDone, yearChecked, onTogg
                         <span style={{ flex: 1, textAlign: "left", fontSize: 13.5, color: dn ? C.faint : C.ink }}>{g.text}</span>
                         <span style={{ fontSize: 12, color: adherence >= 0.9 ? C.moss : C.indigo }}>{Math.round(adherence * 100)}%</span>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 0 8px 34px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 0 8px 36px" }}>
                         <span style={{ fontSize: 11.5, color: C.faint }}>{completed} done · {scheduled} scheduled</span>
                         <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
                           <button className="r26-step" onClick={() => onSetWorkoutTarget(target - 1)}>−</button>
