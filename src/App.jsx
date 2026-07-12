@@ -7,9 +7,12 @@ import { visibleItems } from "./data/daily";
 import Enso from "./components/Enso";
 import Home from "./components/Home";
 import { Screen } from "./components/ui";
+import SealMoment from "./components/SealMoment";
 import List from "./components/screens/List";
 import Reflect from "./components/screens/Reflect";
 import Rate from "./components/screens/Rate";
+import Guidance from "./components/screens/Guidance";
+import Why from "./components/screens/Why";
 import Trends from "./components/Trends";
 import Path from "./components/Path";
 import Log from "./components/Log";
@@ -17,6 +20,7 @@ import Year from "./components/Year";
 
 export default function App() {
   const [screen, setScreen] = useState("home");
+  const [sealing, setSealing] = useState(false);
   const [data, setData] = useState(emptyState);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(null);
@@ -155,12 +159,15 @@ export default function App() {
             dayNum={dayNum} totalDays={totalDays} greeting={greeting} streak={streak}
             stats={{ totalSealed, bestStreak, yearPct: Math.round((yearChecked / YEAR_TOTAL) * 100) }}
             actions={dayActions} onNav={setScreen} eveningReady={eveningReady}
+            onSealStart={() => setSealing(true)}
           />
         )}
 
         {screen === "list" && <List today={today} actions={dayActions} onBack={goHome} />}
         {screen === "reflect" && <Reflect today={today} setRefl={dayActions.setRefl} onBack={goHome} />}
         {screen === "rate" && <Rate today={today} setRating={dayActions.setRating} onBack={goHome} />}
+        {screen === "guidance" && <Guidance dayNum={dayNum} onBack={goHome} />}
+        {screen === "why" && <Why onBack={goHome} />}
 
         {screen === "trends" && (
           <Screen title="Trends" sub="Your weeks, at a glance." onBack={goHome}>
@@ -185,6 +192,11 @@ export default function App() {
               onSetWorkoutTarget={(v) => setData((d) => ({ ...d, settings: { ...d.settings, workoutTarget: Math.max(1, Math.min(14, v)) } }))}
               onGoToLog={() => setScreen("log")} />
           </Screen>
+        )}
+
+        {sealing && (
+          <SealMoment today={today} streak={streak} actions={dayActions}
+            onDone={() => { setSealing(false); setScreen("home"); }} />
         )}
 
         {error && <p className="r26-err">{error}</p>}

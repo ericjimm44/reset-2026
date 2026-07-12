@@ -202,8 +202,8 @@ button { font-family: inherit; }
   animation: r26-stamp 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) 1.3s both;
 }
 
-/* Ensō drawing stroke inside the ceremony. */
-.r26-enso-draw { animation: r26-draw 1.5s ease-out both; }
+/* Ensō drawing stroke inside the ceremony — one slow brushstroke closing. */
+.r26-enso-draw circle { animation: r26-draw 1.5s ease-out both; }
 
 /* ————— shared small controls ————— */
 
