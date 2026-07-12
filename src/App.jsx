@@ -3,17 +3,20 @@ import { C } from "./lib/theme";
 import { load, save, exportData, importData, emptyState } from "./lib/storage";
 import { START, END, dayKey, daysBetween, addDays, normDay } from "./lib/dates";
 import { YEAR, YEAR_TOTAL } from "./data/goals";
-import { Ring } from "./components/ui";
-import Today from "./components/Today";
+import { visibleItems } from "./data/daily";
+import Enso from "./components/Enso";
+import Home from "./components/Home";
+import { Screen } from "./components/ui";
+import List from "./components/screens/List";
+import Reflect from "./components/screens/Reflect";
+import Rate from "./components/screens/Rate";
 import Trends from "./components/Trends";
 import Path from "./components/Path";
 import Log from "./components/Log";
 import Year from "./components/Year";
 
-const TABS = [["today", "Today"], ["trends", "Trends"], ["path", "Path"], ["log", "Log"], ["year", "2026"]];
-
 export default function App() {
-  const [tab, setTab] = useState("today");
+  const [screen, setScreen] = useState("home");
   const [data, setData] = useState(emptyState);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(null);
@@ -29,6 +32,9 @@ export default function App() {
     setData(load());
     setReady(true);
   }, []);
+
+  // Scroll to the top of each new screen — every moment starts at its beginning.
+  useEffect(() => { window.scrollTo(0, 0); }, [screen]);
 
   // Debounced save — every change persists ~450ms after you stop.
   useEffect(() => {
@@ -102,7 +108,6 @@ export default function App() {
     while (n < 400 && data.days[dayKey(d)]?.closed) { n++; d = addDays(d, -1); }
     return n;
   })();
-  const nextMile = [7, 30, 60, 90, 120, 175].find((m) => m > streak);
 
   const dayNum = Math.min(Math.max(daysBetween(START, now) + 1, 1), daysBetween(START, END) + 1);
   const totalDays = daysBetween(START, END) + 1;
@@ -121,21 +126,22 @@ export default function App() {
     : !!data.yearGoals[`${cat}-${i}`];
   const yearChecked = YEAR.reduce((n, c) => n + c.goals.filter((g, i) => goalDone(c.label, i, g)).length, 0);
 
-  const strip = Array.from({ length: 14 }, (_, i) => {
-    const d = addDays(now, -(13 - i));
-    const rec = data.days[dayKey(d)];
-    return { closed: rec?.closed, yes: rec?.onePercent === "yes", isToday: dayKey(d) === tk };
-  });
+  // Today's list, focus math — shared by the hub and the List screen.
+  const items = visibleItems(today.hasKids);
+  const remaining = items.filter((i) => !today.checks[i.id]);
+  const pct = items.length ? (items.length - remaining.length) / items.length : 0;
 
   const hour = now.getHours();
   const greeting = hour < 5 ? "Late night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const eveningReady = remaining.length === 0 || hour >= 19;
 
   const doReset = () => { const f = emptyState(); setData(f); save(f); setConfirmReset(false); };
+  const goHome = () => setScreen("home");
 
   if (!ready) {
     return (
       <div style={{ ...page, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Ring pct={0} closed={false} streak={0} loading />
+        <Enso pct={0} size={160} />
       </div>
     );
   }
@@ -143,73 +149,84 @@ export default function App() {
   return (
     <div style={page}>
       <div style={shell}>
-        <div className="r26-wordmark">JIMMY&rsquo;S 2026 RESET</div>
-        <div className="r26-eyebrow" style={{ marginTop: 6 }}>The Reset · Day {dayNum} of {totalDays}</div>
-        <div style={{ fontSize: 15, color: C.sub, marginTop: 2 }}>{greeting}, Jimmy.</div>
-
-        <div className="r26-tabs">
-          {TABS.map(([k, l]) => (
-            <button key={k} onClick={() => setTab(k)} className="r26-tab"
-              style={{ background: tab === k ? C.ink : "transparent", color: tab === k ? C.washi : C.sub }}>{l}</button>
-          ))}
-        </div>
-
-        {tab === "today" && <Today today={today} actions={dayActions} streak={streak} nextMile={nextMile} strip={strip} />}
-        {tab === "trends" && <Trends days={data.days} now={now} />}
-        {tab === "path" && <Path data={data} now={now} actions={pathActions} />}
-        {tab === "log" && <Log logs={data.logs} today={tk} actions={logActions} />}
-        {tab === "year" && (
-          <Year data={data} now={now} goalDone={goalDone} yearChecked={yearChecked}
-            workout={{ adherence, completed: completedWorkouts, scheduled, target }}
-            onToggleGoal={(id) => setData((d) => ({ ...d, yearGoals: { ...d.yearGoals, [id]: !d.yearGoals[id] } }))}
-            onSetWorkoutTarget={(v) => setData((d) => ({ ...d, settings: { ...d.settings, workoutTarget: Math.max(1, Math.min(14, v)) } }))}
-            onGoToLog={() => setTab("log")} />
+        {screen === "home" && (
+          <Home
+            today={today} items={items} remaining={remaining} pct={pct}
+            dayNum={dayNum} totalDays={totalDays} greeting={greeting} streak={streak}
+            stats={{ totalSealed, bestStreak, yearPct: Math.round((yearChecked / YEAR_TOTAL) * 100) }}
+            actions={dayActions} onNav={setScreen} eveningReady={eveningReady}
+          />
         )}
 
-        {tab === "today" && (
-          <div className="r26-stats">
-            <div><b>{totalSealed}</b><span>days sealed</span></div>
-            <div><b>{bestStreak}</b><span>best streak</span></div>
-            <div><b>{Math.round((yearChecked / YEAR_TOTAL) * 100)}%</b><span>2026 goals</span></div>
-          </div>
+        {screen === "list" && <List today={today} actions={dayActions} onBack={goHome} />}
+        {screen === "reflect" && <Reflect today={today} setRefl={dayActions.setRefl} onBack={goHome} />}
+        {screen === "rate" && <Rate today={today} setRating={dayActions.setRating} onBack={goHome} />}
+
+        {screen === "trends" && (
+          <Screen title="Trends" sub="Your weeks, at a glance." onBack={goHome}>
+            <Trends days={data.days} now={now} />
+          </Screen>
+        )}
+        {screen === "path" && (
+          <Screen title="The Path" sub="One week at a time." onBack={goHome}>
+            <Path data={data} now={now} actions={pathActions} />
+          </Screen>
+        )}
+        {screen === "log" && (
+          <Screen title="Log" sub="What you finish, counted." onBack={goHome}>
+            <Log logs={data.logs} today={tk} actions={logActions} />
+          </Screen>
+        )}
+        {screen === "year" && (
+          <Screen title="2026" sub="175 days. One circle at a time." onBack={goHome}>
+            <Year data={data} now={now} goalDone={goalDone} yearChecked={yearChecked}
+              workout={{ adherence, completed: completedWorkouts, scheduled, target }}
+              onToggleGoal={(id) => setData((d) => ({ ...d, yearGoals: { ...d.yearGoals, [id]: !d.yearGoals[id] } }))}
+              onSetWorkoutTarget={(v) => setData((d) => ({ ...d, settings: { ...d.settings, workoutTarget: Math.max(1, Math.min(14, v)) } }))}
+              onGoToLog={() => setScreen("log")} />
+          </Screen>
         )}
 
         {error && <p className="r26-err">{error}</p>}
 
-        <div style={{ textAlign: "center", marginTop: 18, display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-          <button className="r26-link" onClick={() => setBackup(exportData(data))}>Backup &amp; restore</button>
-          {confirmReset ? (
-            <span style={{ fontSize: 12.5, color: C.sub }}>
-              Erase everything? <button className="r26-link" onClick={doReset}>Yes</button>
-              {" · "}<button className="r26-link" onClick={() => setConfirmReset(false)}>Keep it</button>
-            </span>
-          ) : (
-            <button className="r26-link" onClick={() => setConfirmReset(true)}>Reset</button>
-          )}
-        </div>
-
-        {backup !== null && (
-          <div className="r26-card" style={{ marginTop: 14 }}>
-            <div className="r26-grouphead">Backup &amp; restore</div>
-            <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0 }}>
-              Data lives on this device only. Copy this somewhere safe; paste it back to restore or move devices.
-            </p>
-            <textarea className="r26-text" rows={4} value={backup} onChange={(e) => setBackup(e.target.value)}
-              style={{ fontFamily: "monospace", fontSize: 11 }} />
-            <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-              <button className="r26-mini" onClick={() => navigator.clipboard?.writeText(backup)}>Copy</button>
-              <button className="r26-mini" onClick={() => {
-                try { setData(importData(backup)); setBackup(null); }
-                catch { setError("That backup couldn't be read. Check it was pasted whole."); }
-              }}>Restore</button>
-              <button className="r26-mini" style={{ marginLeft: "auto" }} onClick={() => setBackup(null)}>Close</button>
+        {screen === "home" && (
+          <>
+            <div style={{ textAlign: "center", marginTop: 18, display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+              <button className="r26-link" onClick={() => setBackup(exportData(data))}>Backup &amp; restore</button>
+              {confirmReset ? (
+                <span style={{ fontSize: 12.5, color: C.sub }}>
+                  Erase everything? <button className="r26-link" onClick={doReset}>Yes</button>
+                  {" · "}<button className="r26-link" onClick={() => setConfirmReset(false)}>Keep it</button>
+                </span>
+              ) : (
+                <button className="r26-link" onClick={() => setConfirmReset(true)}>Reset</button>
+              )}
             </div>
-          </div>
+
+            {backup !== null && (
+              <div className="r26-card" style={{ marginTop: 14 }}>
+                <div className="r26-grouphead">Backup &amp; restore</div>
+                <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0 }}>
+                  Data lives on this device only. Copy this somewhere safe; paste it back to restore or move devices.
+                </p>
+                <textarea className="r26-text" rows={4} value={backup} onChange={(e) => setBackup(e.target.value)}
+                  style={{ fontFamily: "monospace", fontSize: 11 }} />
+                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+                  <button className="r26-mini" onClick={() => navigator.clipboard?.writeText(backup)}>Copy</button>
+                  <button className="r26-mini" onClick={() => {
+                    try { setData(importData(backup)); setBackup(null); }
+                    catch { setError("That backup couldn't be read. Check it was pasted whole."); }
+                  }}>Restore</button>
+                  <button className="r26-mini" style={{ marginLeft: "auto" }} onClick={() => setBackup(null)}>Close</button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
   );
 }
 
-const page = { minHeight: "100vh", background: C.washi, color: C.ink, fontFamily: "'Helvetica Neue', Inter, system-ui, sans-serif" };
-const shell = { maxWidth: 460, margin: "0 auto", padding: "24px 18px 60px" };
+const page = { minHeight: "100vh", background: C.washi, color: C.ink, fontFamily: "var(--sans)" };
+const shell = { maxWidth: 440, margin: "0 auto", padding: "20px 20px 60px" };

@@ -154,5 +154,5 @@ export const visibleItems = (hasKids) =>
   GROUPS.flatMap((g) =>
     g.items
       .filter((i) => i.withKids === undefined || i.withKids === hasKids)
-      .map((i) => ({ ...i, group: g.label }))
+      .map((i) => ({ ...i, group: g.label, groupKey: g.key }))
   );
