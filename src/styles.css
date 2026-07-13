@@ -128,6 +128,7 @@ button { font-family: inherit; }
 }
 .r26-tag { font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--faint); align-self: center; margin-left: 8px; white-space: nowrap; }
 .r26-grat { padding: 0 0 12px 36px; display: flex; flex-direction: column; gap: 8px; }
+.r26-group:last-child { border-bottom: none !important; }
 
 /* ————— inputs ————— */
 

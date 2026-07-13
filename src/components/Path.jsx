@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { C } from "../lib/theme";
-import { PATH, PATH_FLAT, TOTAL_WEEKS, SCORE } from "../data/path";
+import { PATH, PATH_FLAT, TOTAL_WEEKS, SCORE, LISTEN } from "../data/path";
 import { START, addDays, daysBetween, dayKey } from "../lib/dates";
 import { Check, SecHead, Scale } from "./ui";
 
@@ -53,6 +53,15 @@ export default function Path({ data, now, actions }) {
         {wk.read && (
           <div style={{ fontSize: 13.5, color: C.ink, marginBottom: 10 }}>
             <span style={{ color: C.faint }}>Read · </span>{wk.read}
+          </div>
+        )}
+
+        {LISTEN[wk.n] && (
+          <div style={{ marginBottom: 12, padding: "10px 12px", background: C.washi, borderRadius: 10 }}>
+            <div className="r26-eyebrow" style={{ marginBottom: 4, color: C.indigo }}>Listen this week</div>
+            <div style={{ fontSize: 13.5, color: C.ink }}>{LISTEN[wk.n].who}</div>
+            <div style={{ fontSize: 13, color: C.sub, marginTop: 2 }}>{LISTEN[wk.n].topic}</div>
+            <div style={{ fontSize: 11.5, color: C.faint, marginTop: 4 }}>search: &ldquo;{LISTEN[wk.n].search}&rdquo;</div>
           </div>
         )}
 

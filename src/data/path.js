@@ -675,3 +675,48 @@ export const SCORE = [
     "Emotional honesty"
   ]
 ];
+
+// One thing to listen to each week, matched to the week's focus.
+// Phrased as who + topic + a search cue (episode names drift; searches don't).
+export const LISTEN = {
+  1:  { who: "Jay Shetty · On Purpose", topic: "Understanding anxious attachment", search: "Jay Shetty attachment styles" },
+  2:  { who: "Mel Robbins", topic: "Calming anxiety before it floods you", search: "Mel Robbins anxiety reset" },
+  3:  { who: "Jefferson Fisher", topic: "How to argue less and talk calmly", search: "Jefferson Fisher how to argue" },
+  4:  { who: "Mel Robbins", topic: "Self-respect and raising your standards", search: "Mel Robbins self respect" },
+  5:  { who: "Mel Robbins", topic: "The Let Them theory, from the source", search: "Mel Robbins let them theory" },
+  6:  { who: "Jay Shetty · On Purpose", topic: "Morning routines that actually hold", search: "Jay Shetty morning routine" },
+  7:  { who: "Jay Shetty · On Purpose", topic: "Overthinking and the need for validation", search: "Jay Shetty stop overthinking" },
+  8:  { who: "Mel Robbins", topic: "Making peace with uncertainty", search: "Mel Robbins uncertainty" },
+  9:  { who: "James Clear (guest)", topic: "Systems over goals", search: "James Clear atomic habits interview" },
+  10: { who: "James Clear (guest)", topic: "Identity-based habits — vote for who you're becoming", search: "James Clear identity based habits" },
+  11: { who: "Mel Robbins", topic: "Designing an environment that does the work", search: "Mel Robbins environment habits" },
+  12: { who: "Jay Shetty · On Purpose", topic: "Discipline for the days motivation dies", search: "Jay Shetty discipline motivation" },
+  13: { who: "Dr. Robert Glover (guest)", topic: "Nice-guy patterns vs real kindness", search: "Robert Glover nice guy interview" },
+  14: { who: "Jefferson Fisher", topic: "Saying it clearly without being cruel", search: "Jefferson Fisher speak with confidence" },
+  15: { who: "Jefferson Fisher", topic: "Asking for what you actually need", search: "Jefferson Fisher express your needs" },
+  16: { who: "Mel Robbins", topic: "Why people-pleasing isn't kindness", search: "Mel Robbins people pleasing" },
+  17: { who: "Nedra Glover Tawwab (guest)", topic: "Why boundaries are a form of love", search: "Nedra Tawwab boundaries interview" },
+  18: { who: "Mel Robbins", topic: "Saying no without the guilt spiral", search: "Mel Robbins how to say no" },
+  19: { who: "Jay Shetty · On Purpose", topic: "Resentment — the bill for unspoken needs", search: "Jay Shetty resentment" },
+  20: { who: "Jefferson Fisher", topic: "Holding your ground without raising your voice", search: "Jefferson Fisher set boundaries" },
+  21: { who: "Esther Perel", topic: "What intimacy actually is", search: "Esther Perel intimacy" },
+  22: { who: "Esther Perel", topic: "Desire in long-term love", search: "Esther Perel desire TED talk" },
+  23: { who: "Esther Perel · Where Should We Begin", topic: "Hearing real couples close the distance", search: "Where Should We Begin emotional distance" },
+  24: { who: "Jay Shetty · On Purpose", topic: "Staying yourself inside a relationship", search: "Jay Shetty individuality in relationships" },
+  25: { who: "Dr. Lindsay Gibson (guest)", topic: "Emotionally immature parents, from the author", search: "Lindsay Gibson emotionally immature parents" },
+  26: { who: "Jay Shetty · On Purpose", topic: "Healing what childhood left unfinished", search: "Jay Shetty childhood wounds healing" },
+  27: { who: "Mel Robbins", topic: "Meeting the old wounds without reopening them", search: "Mel Robbins heal your past" },
+  28: { who: "Dr. Nicole LePera (guest)", topic: "Re-parenting yourself", search: "Nicole LePera reparenting" },
+  29: { who: "Dr. Bessel van der Kolk (guest)", topic: "How trauma lives in the body, from the author", search: "Bessel van der Kolk interview" },
+  30: { who: "Dr. Andrew Huberman", topic: "Tools for a calmer nervous system", search: "Huberman stress nervous system tools" },
+  31: { who: "Jay Shetty · On Purpose", topic: "Processing emotion instead of outrunning it", search: "Jay Shetty emotional healing" },
+  32: { who: "Mel Robbins", topic: "Resilience you can actually practice", search: "Mel Robbins resilience" },
+  33: { who: "James Sexton (guest)", topic: "A divorce lawyer on how love survives", search: "James Sexton how to stay in love" },
+  34: { who: "Esther Perel", topic: "Resentment between partners", search: "Esther Perel resentment" },
+  35: { who: "Jefferson Fisher", topic: "Everyday communication habits", search: "Jefferson Fisher communication" },
+  36: { who: "Jay Shetty · On Purpose", topic: "Owning your part without self-flagellating", search: "Jay Shetty accountability in relationships" },
+  37: { who: "Drs. John & Julie Gottman (guests)", topic: "Friendship and trust, from the authors", search: "Gottman Jay Shetty interview" },
+  38: { who: "The Gottman Institute", topic: "The four horsemen — and their antidotes", search: "Gottman four horsemen" },
+  39: { who: "The Gottman Institute", topic: "Repair attempts — the secret weapon", search: "Gottman repair attempts" },
+  40: { who: "Jay Shetty · On Purpose", topic: "Becoming the partner you'd want to be with", search: "Jay Shetty healthy love" },
+};

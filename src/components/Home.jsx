@@ -66,6 +66,12 @@ export default function Home({
           <button className="r26-sealbtn" onClick={onSealStart}>
             Seal the day <span className="r26-stamp" style={{ width: 26, height: 26, fontSize: 14 }}>済</span>
           </button>
+          {/* overwhelm doesn't keep office hours */}
+          {left > 0 && (
+            <button className="r26-link" style={{ marginTop: 10 }} onClick={() => onNav("overwhelmed")}>
+              Feeling overwhelmed?
+            </button>
+          )}
         </div>
       ) : nextBox ? (
         <div style={{ marginTop: 24, width: "100%", maxWidth: 340 }}>
@@ -83,6 +89,10 @@ export default function Home({
               <span style={{ display: "block", fontSize: 11.5, color: C.faint, marginTop: 2 }}>{nextBox.group}</span>
             </span>
             <span style={{ width: 24, height: 24, borderRadius: 12, border: `1.6px solid ${C.line}`, flexShrink: 0 }} />
+          </button>
+          {/* for the days when even one box feels like too much */}
+          <button className="r26-link" style={{ marginTop: 10 }} onClick={() => onNav("overwhelmed")}>
+            Feeling overwhelmed?
           </button>
         </div>
       ) : null}

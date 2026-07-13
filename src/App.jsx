@@ -14,6 +14,7 @@ import Rate from "./components/screens/Rate";
 import Guidance from "./components/screens/Guidance";
 import Why from "./components/screens/Why";
 import Settings from "./components/screens/Settings";
+import Overwhelmed from "./components/screens/Overwhelmed";
 import Trends from "./components/Trends";
 import Path from "./components/Path";
 import Log from "./components/Log";
@@ -165,6 +166,7 @@ export default function App() {
         {screen === "list" && <List today={today} actions={dayActions} onBack={goHome} />}
         {screen === "reflect" && <Reflect today={today} setRefl={dayActions.setRefl} onBack={goHome} />}
         {screen === "rate" && <Rate today={today} setRating={dayActions.setRating} onBack={goHome} />}
+        {screen === "overwhelmed" && <Overwhelmed today={today} toggleCheck={dayActions.toggleCheck} onBack={goHome} />}
         {screen === "guidance" && <Guidance dayNum={dayNum} onBack={goHome} />}
         {screen === "why" && <Why onBack={goHome} />}
         {screen === "settings" && (
