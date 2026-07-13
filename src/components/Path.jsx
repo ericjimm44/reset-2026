@@ -61,7 +61,17 @@ export default function Path({ data, now, actions }) {
             <div className="r26-eyebrow" style={{ marginBottom: 4, color: C.indigo }}>Listen this week</div>
             <div style={{ fontSize: 13.5, color: C.ink }}>{LISTEN[wk.n].who}</div>
             <div style={{ fontSize: 13, color: C.sub, marginTop: 2 }}>{LISTEN[wk.n].topic}</div>
-            <div style={{ fontSize: 11.5, color: C.faint, marginTop: 4 }}>search: &ldquo;{LISTEN[wk.n].search}&rdquo;</div>
+            {/* live search links — episode URLs rot, searches don't */}
+            <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+              <a className="r26-listenlink" target="_blank" rel="noopener noreferrer"
+                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(LISTEN[wk.n].search)}`}>
+                ▶ YouTube
+              </a>
+              <a className="r26-listenlink" target="_blank" rel="noopener noreferrer"
+                href={`https://open.spotify.com/search/${encodeURIComponent(LISTEN[wk.n].search)}`}>
+                ♫ Spotify
+              </a>
+            </div>
           </div>
         )}
 

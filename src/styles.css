@@ -209,6 +209,9 @@ button { font-family: inherit; }
 /* ————— shared small controls ————— */
 
 .r26-link { background: none; border: none; color: var(--faint); font-size: 12px; text-decoration: underline; cursor: pointer; padding: 6px 2px; }
+/* Listen-this-week platform links — quiet pills, open the app on a phone. */
+.r26-listenlink { display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border-radius: 18px; background: rgba(60, 84, 112, 0.12); color: var(--indigo); font-size: 12px; text-decoration: none; }
+.r26-listenlink:hover { background: rgba(60, 84, 112, 0.2); }
 .r26-link:hover { color: var(--ink); }
 .r26-mini { border: 1px solid var(--ink); background: none; color: var(--ink); border-radius: 10px; padding: 9px 18px; font-size: 12.5px; cursor: pointer; }
 .r26-mini:hover { background: var(--ink); color: var(--washi); }
