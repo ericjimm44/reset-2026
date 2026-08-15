@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { C } from "../../lib/theme";
 import { Screen } from "../ui";
+import { pushSupported, isIOS, isStandalone, getExistingSubscription, subscribeToPush, unsubscribeFromPush, testNotification } from "../../lib/push";
 
 /*
   Housekeeping lives here so the hub stays quiet.
@@ -11,8 +12,92 @@ export default function Settings({ onExport, onImport, onReset, onBack }) {
   const [confirmReset, setConfirmReset] = useState(false);
   const [note, setNote] = useState(null);
 
+  // ——— daily reminder ———
+  const [sub, setSub] = useState(null);
+  const [subJson, setSubJson] = useState(null);
+  const [pushNote, setPushNote] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const supported = pushSupported();
+  const needsInstall = isIOS() && !isStandalone();
+
+  useEffect(() => {
+    getExistingSubscription().then(setSub).catch(() => {});
+  }, []);
+
+  const doSubscribe = async () => {
+    setBusy(true);
+    setPushNote(null);
+    try {
+      const s = await subscribeToPush();
+      setSub(s);
+      setSubJson(JSON.stringify(s));
+      setPushNote("Notifications are on for this device. Last step below.");
+    } catch (e) {
+      setPushNote(e.message);
+    }
+    setBusy(false);
+  };
+
   return (
     <Screen title="Settings" sub="Housekeeping, out of the way." onBack={onBack}>
+      {/* ——— daily reminder ——— */}
+      <div className="r26-card">
+        <div className="r26-grouphead">Daily reminder</div>
+        {!supported ? (
+          <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0, marginBottom: 0 }}>
+            This browser can&rsquo;t send notifications. Open the app on your phone to set up a daily nudge.
+          </p>
+        ) : needsInstall ? (
+          <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0, marginBottom: 0 }}>
+            On iPhone, add this app to your home screen first (Share → Add to Home Screen), then open it
+            from that icon and come back here.
+          </p>
+        ) : (
+          <>
+            <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0 }}>
+              A quiet nudge once a day. No streak threats — just an open door.
+            </p>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {!sub ? (
+                <button className="r26-mini" onClick={doSubscribe} disabled={busy}>
+                  {busy ? "Asking…" : "Turn on reminders"}
+                </button>
+              ) : (
+                <>
+                  <button className="r26-mini" onClick={() => testNotification()}>Send a test</button>
+                  <button className="r26-mini" onClick={() => { setSubJson(JSON.stringify(sub)); }}>Show my code</button>
+                  <button className="r26-link" style={{ marginLeft: "auto" }}
+                    onClick={async () => { await unsubscribeFromPush(); setSub(null); setSubJson(null); setPushNote("Reminders off."); }}>
+                    Turn off
+                  </button>
+                </>
+              )}
+            </div>
+
+            {subJson && (
+              <div style={{ marginTop: 12 }}>
+                <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0 }}>
+                  Paste this into your GitHub repo under <b>Settings → Secrets and variables → Actions</b>,
+                  as a secret named <b>PUSH_SUBSCRIPTION</b>. One time only.
+                </p>
+                <textarea className="r26-text" rows={4} readOnly value={subJson}
+                  style={{ fontFamily: "monospace", fontSize: 10.5 }} />
+                <button className="r26-mini" style={{ marginTop: 8 }}
+                  onClick={() => { navigator.clipboard?.writeText(subJson); setPushNote("Copied."); }}>
+                  Copy code
+                </button>
+              </div>
+            )}
+
+            {pushNote && (
+              <p style={{ fontSize: 12.5, color: pushNote.includes("blocked") || pushNote.includes("can't") ? C.seal : C.mossDeep, marginBottom: 0 }}>
+                {pushNote}
+              </p>
+            )}
+          </>
+        )}
+      </div>
+
       <div className="r26-card">
         <div className="r26-grouphead">Backup &amp; restore</div>
         <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0 }}>

@@ -54,18 +54,25 @@ export default function App() {
   const patchDay = (fn) => setData((d) => ({ ...d, days: { ...d.days, [tk]: fn(normDay(d.days[tk])) } }));
 
   const dayActions = {
-    toggleCheck: (id) => patchDay((day) => ({ ...day, checks: { ...day.checks, [id]: !day.checks[id] } })),
+    // Showing up IS the streak: checking anything seals the day, so you can
+    // never lose a day to forgetting the ritual. Answering the question also
+    // seals it (even with nothing checked — honesty counts). Undo the last
+    // check and the auto-seal lifts, so a stray tap leaves no phantom day.
+    toggleCheck: (id) => patchDay((day) => {
+      const checks = { ...day.checks, [id]: !day.checks[id] };
+      return { ...day, checks, closed: Object.values(checks).some(Boolean) || !!day.onePercent };
+    }),
     setGrat: (i, v) => patchDay((day) => {
       const g = [...day.gratitude];
       g[i] = v;
-      return { ...day, gratitude: g, checks: { ...day.checks, gratitude: g.filter((x) => x.trim()).length >= 3 } };
+      const checks = { ...day.checks, gratitude: g.filter((x) => x.trim()).length >= 3 };
+      return { ...day, gratitude: g, checks, closed: Object.values(checks).some(Boolean) || !!day.onePercent };
     }),
     setRefl: (k, v) => patchDay((day) => ({ ...day, reflection: { ...day.reflection, [k]: v } })),
     setHasKids: (v) => patchDay((day) => ({ ...day, hasKids: v })),
     setRating: (k, v) => patchDay((day) => ({ ...day, ratings: { ...day.ratings, [k]: day.ratings[k] === v ? null : v } })),
     setPct: (v) => patchDay((day) => ({ ...day, onePercent: v })),
     closeDay: () => patchDay((day) => ({ ...day, closed: true })),
-    reopenDay: () => patchDay((day) => ({ ...day, closed: false })),
   };
 
   const pathActions = {

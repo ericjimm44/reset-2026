@@ -11,8 +11,9 @@ import Enso from "./Enso";
   Reduced motion collapses the ceremony to an instant (CSS handles it).
 */
 export default function SealMoment({ today, streak, actions, onDone }) {
-  // "ask" → answer the question · "sealed" → the circle closes
-  const [stage, setStage] = useState(today.closed ? "sealed" : "ask");
+  // "ask" → answer the question · "sealed" → the circle closes.
+  // Days auto-seal now, so a closed day that was never answered still gets asked.
+  const [stage, setStage] = useState(today.closed && today.onePercent ? "sealed" : "ask");
 
   const answer = (v) => {
     actions.setPct(v);
@@ -24,12 +25,16 @@ export default function SealMoment({ today, streak, actions, onDone }) {
     return (
       <div className="r26-overlay">
         <div style={{ maxWidth: 340 }}>
-          <div className="r26-eyebrow" style={{ color: C.mossDeep }}>Seal today</div>
+          <div className="r26-eyebrow" style={{ color: C.mossDeep }}>
+            {today.closed ? "Today's question" : "Seal today"}
+          </div>
           <p className="r26-serif" style={{ fontSize: 21, lineHeight: 1.55, fontStyle: "italic", margin: "22px 0 6px" }}>
             &ldquo;{SEAL_Q}&rdquo;
           </p>
           <p style={{ fontSize: 12.5, color: C.faint, margin: "0 0 8px" }}>
-            Either answer seals the day. Honesty is showing up.
+            {today.closed
+              ? "Today is already sealed. This is just for you."
+              : "Either answer seals the day. Honesty is showing up."}
           </p>
           <div className="r26-yesno">
             <button className="r26-pick" style={{ background: C.moss, borderColor: C.moss, color: "#F3F0E8" }}

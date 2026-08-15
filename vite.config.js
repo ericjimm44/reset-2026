@@ -11,6 +11,13 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      // Custom service worker so it can receive daily reminder pushes.
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.js",
+      injectManifest: {
+        globPatterns: ["**/*.{js,css,html,woff,woff2,png,svg,ico}"],
+      },
       includeAssets: ["apple-touch-icon.png", "favicon-64.png"],
       manifest: {
         name: "Jimmy's 2026 Reset",
@@ -27,10 +34,6 @@ export default defineConfig({
           { src: "icon-512.png", sizes: "512x512", type: "image/png" },
           { src: "icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
-      },
-      workbox: {
-        // Bundle everything for offline — the app already stores its data locally.
-        globPatterns: ["**/*.{js,css,html,woff,woff2,png,svg,ico}"],
       },
     }),
   ],

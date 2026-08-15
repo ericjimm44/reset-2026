@@ -1,0 +1,24 @@
+name: Daily reminder
+
+on:
+  schedule:
+    # 14:00 UTC ≈ 9am Eastern / 8am Central. Change this line to move the nudge.
+    # (GitHub's cron can run 15-60 min late at busy times — fine for a daily check-in.)
+    - cron: "0 14 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install web-push@3
+      - run: node scripts/send-reminder.mjs
+        env:
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
+          VAPID_SUBJECT: mailto:ericjimm44@gmail.com

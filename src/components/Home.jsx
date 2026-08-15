@@ -11,7 +11,7 @@ export default function Home({
   today, items, remaining, pct,
   dayNum, totalDays, greeting, streak,
   stats, // { totalSealed, bestStreak, yearPct }
-  actions, // { toggleCheck, reopenDay, … }
+  actions, // { toggleCheck, setPct, closeDay, … }
   onNav,
   onSealStart,
   eveningReady, // remaining done OR evening hour
@@ -49,16 +49,41 @@ export default function Home({
 
       {/* ——— the day's single focus ——— */}
       {today.closed ? (
-        <div style={{ marginTop: 26, maxWidth: 320 }}>
-          <div className="r26-serif" style={{ fontSize: 17, lineHeight: 1.55, fontStyle: "italic" }}>
-            {SEAL_STEPS.sealedNote}
-          </div>
-          <div style={{ marginTop: 14, fontSize: 13, color: C.mossDeep }}>
+        <div style={{ marginTop: 24, width: "100%", maxWidth: 340 }}>
+          <div style={{ fontSize: 13, color: C.mossDeep }}>
             {streak} {streak === 1 ? "day" : "days"} sealed in a row.
           </div>
-          <button className="r26-link" style={{ marginTop: 10 }} onClick={actions.reopenDay}>
-            Reopen today
-          </button>
+
+          {/* The day is already safe. The question is here if you want it — never a gate. */}
+          {!today.onePercent && (
+            <div style={{ marginTop: 18 }}>
+              <button className="r26-link" onClick={onSealStart}>
+                Answer today&rsquo;s question · optional
+              </button>
+            </div>
+          )}
+          {today.onePercent && (
+            <div className="r26-serif" style={{ fontSize: 16.5, lineHeight: 1.55, fontStyle: "italic", marginTop: 16, color: C.sub }}>
+              {SEAL_STEPS.sealedNote}
+            </div>
+          )}
+
+          {/* still a day to live — keep the work reachable */}
+          {left > 0 && nextBox && (
+            <button className="r26-nextstep" style={{ marginTop: 18 }} onClick={() => actions.toggleCheck(nextBox.id)}>
+              <GroupIcon k={nextBox.groupKey} size={22} color={C.mossDeep} />
+              <span style={{ flex: 1 }}>
+                <span style={{ display: "block", fontSize: 15, color: C.ink }}>{nextBox.text}</span>
+                <span style={{ display: "block", fontSize: 11.5, color: C.faint, marginTop: 2 }}>{nextBox.group}</span>
+              </span>
+              <span style={{ width: 24, height: 24, borderRadius: 12, border: `1.6px solid ${C.line}`, flexShrink: 0 }} />
+            </button>
+          )}
+          {left > 0 && (
+            <button className="r26-link" style={{ marginTop: 10 }} onClick={() => onNav("overwhelmed")}>
+              Feeling overwhelmed?
+            </button>
+          )}
         </div>
       ) : eveningReady ? (
         <div style={{ marginTop: 24, width: "100%", maxWidth: 340 }}>

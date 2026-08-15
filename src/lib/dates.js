@@ -32,6 +32,7 @@ export const emptyDay = () => ({
   hasKids: true,
   ratings: {},
   onePercent: null,
+  // Sealed by showing up (any check) or by answering the question.
   closed: false,
 });
 
