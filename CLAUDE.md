@@ -17,7 +17,8 @@ These were learned the hard way over many iterations. Changing them breaks the a
 - **Daily tasks must be simple enough to complete on the hardest days.** If they're too ambitious, anxiety convinces Jimmy he's already failed. An earlier "Core 6" version with journaling attached to every item was *too heavy* and was reverted. Do not re-add complexity to the daily list.
 - **The app opens in focus mode: only what's NEXT.** The hub shows the ensō, one suggested next box, and nothing else above the fold. The full list, reflection, and ratings each live one tap deeper. Never show a wall of checkboxes by default.
 - **"The One Rule" is the anti-overwhelm device.** When anxiety hits, the app asks one question: *what's the next box I can check?* and names a single box — it IS the hub's next-step button. Never remove this.
-- **The streak counts SEALED days, not completed checklists.** Answering the seal question honestly — even "Not today" — seals the day and keeps the streak. Gating the streak on a perfect list would create the exact rumination trap the app exists to break.
+- **The streak counts SHOWING UP, not completed checklists.** Checking any box auto-seals the day (Aug 2026 change — Jimmy was losing days to forgetting the ritual, which defeated the point). Answering the seal question honestly — even "Not today" — also seals, on its own, with nothing checked. The question is now an optional invitation, never a gate. Undoing your last check lifts an auto-seal so a stray tap leaves no phantom day. Gating the streak on a perfect list, or on remembering a ritual, would create the exact rumination trap the app exists to break.
+- **Notifications must never scold.** The daily reminder is an open door, not a nag: no streak counts, no "you missed a day," no urgency. Copy lives in `scripts/send-reminder.mjs`.
 - **Ratings are optional.** Two rating systems exist on purpose: the daily 1–10s (6 metrics, quick, feed Trends) and the monthly scorecard (10 metrics, slower, on Path). Merging them adds friction that kills consistency.
 - **Trend weekly, not daily.** Trends shows weekly averages. Never surface a daily score as a judgment.
 - **Tone: calm, non-judgmental, no gamification.** No fire emojis, no streaks-lost shaming, no "you failed." The aesthetic is washi paper + sumi ink + moss green (Japanese minimal). The ensō ring is the signature.
@@ -65,6 +66,17 @@ local UI state only. The localStorage schema is unchanged from the tab-era app
 
 Fonts are self-hosted via `@fontsource` (Playfair Display for ceremony/serif,
 Inter for UI) — imported in `main.jsx`, no CDN.
+
+**Deployed:** public repo `ericjimm44/reset-2026`, live at
+https://ericjimm44.github.io/reset-2026/ (installable PWA). Pushing to
+`master` auto-deploys via Actions.
+
+**Daily reminder:** `src/sw.js` (injectManifest, classic worker build — ES
+module workers are unreliable on iOS Safari) handles `push`;
+`src/lib/push.js` + Settings do permission/subscribe;
+`.github/workflows/reminder.yml` sends daily via web-push. Repo secrets:
+`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `PUSH_SUBSCRIPTION` (the last comes
+from the phone, re-paste if it ever expires).
 
 ## Key mechanics
 
