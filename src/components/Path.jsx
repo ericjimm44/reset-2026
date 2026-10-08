@@ -1,12 +1,21 @@
 import { useState } from "react";
 import { C } from "../lib/theme";
 import { PATH, PATH_FLAT, TOTAL_WEEKS, SCORE, LISTEN } from "../data/path";
-import { START, addDays, daysBetween, dayKey } from "../lib/dates";
+import { dayKey } from "../lib/dates";
+import { fullPathText, weekText, downloadText } from "../lib/curriculum";
 import { Check, SecHead, Scale } from "./ui";
 
-export default function Path({ data, now, actions }) {
+/*
+  The path measures SEQUENCE, not schedule. There are deliberately no week
+  dates and no "the calendar says you should be on week N" nudge: a calendar
+  is the thing that manufactures "behind," and this path was always meant to
+  run at the pace Jimmy can absorb. It advances when he advances it.
+*/
+export default function Path({ data, now, actions, onNav }) {
   const [overview, setOverview] = useState(false);
   const [scoreOpen, setScoreOpen] = useState(false);
+  const [copied, setCopied] = useState(null);
+  const [showText, setShowText] = useState(false);
   const { setPathWeek, togglePathProject, togglePathMilestone, setPathNotes, setPathScore } = actions;
 
   const pw = data.settings?.pathWeek || 1;
@@ -16,11 +25,14 @@ export default function Path({ data, now, actions }) {
   const prev = PATH_FLAT[idx - 1];
   const next = PATH_FLAT[idx + 1];
 
-  const wkStart = addDays(START, (wk.n - 1) * 7);
-  const wkEnd = addDays(wkStart, 6);
-  const fmt = (d) => d.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  const calWeek = Math.min(TOTAL_WEEKS, Math.max(1, Math.floor(daysBetween(START, now) / 7) + 1));
   const book = wk.wbook || wk.book;
+
+  const flash = (msg) => { setCopied(msg); setTimeout(() => setCopied(null), 2000); };
+  const copy = (text, msg) => {
+    const p = navigator.clipboard?.writeText(text);
+    if (p?.catch) p.catch(() => flash("Couldn't reach the clipboard — use Download instead."));
+    flash(msg);
+  };
 
   const ym = dayKey(now).slice(0, 7);
   const scores = data.pathScores?.[ym] || {};
@@ -32,21 +44,16 @@ export default function Path({ data, now, actions }) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "16px 0 10px" }}>
         <button className="r26-nav" onClick={() => prev && setPathWeek(prev.n)} disabled={!prev} style={{ opacity: prev ? 1 : 0.25 }}>‹</button>
         <div style={{ textAlign: "center" }}>
-          <div className="r26-eyebrow">Week {wk.n} of {TOTAL_WEEKS} · {wk.month}</div>
+          <div className="r26-eyebrow">Week {wk.n} of {TOTAL_WEEKS} · at your pace</div>
           <div style={{ fontFamily: "var(--serif)", fontSize: 18, color: C.ink, marginTop: 2 }}>{wk.theme}</div>
-          <div style={{ fontSize: 11.5, color: C.faint, marginTop: 3 }}>{fmt(wkStart)} – {fmt(wkEnd)}</div>
           {book && <div style={{ fontSize: 12.5, color: C.mossDeep, marginTop: 3 }}>{book}</div>}
         </div>
         <button className="r26-nav" onClick={() => next && setPathWeek(next.n)} disabled={!next} style={{ opacity: next ? 1 : 0.25 }}>›</button>
       </div>
 
-      {wk.n !== calWeek && (
-        <div style={{ textAlign: "center", marginBottom: 10 }}>
-          <button className="r26-link" onClick={() => setPathWeek(calWeek)}>
-            This calendar week is Week {calWeek} · jump there
-          </button>
-        </div>
-      )}
+      <div style={{ textAlign: "center", marginBottom: 10 }}>
+        <button className="r26-link" onClick={() => onNav?.("behind")}>Feeling behind?</button>
+      </div>
 
       <section className="r26-card">
         <div className="r26-grouphead">{wk.focus}</div>
@@ -139,10 +146,44 @@ export default function Path({ data, now, actions }) {
           <textarea className="r26-text" rows={3} value={prog.notes || ""} onChange={(e) => setPathNotes(wk.n, e.target.value)} />
         </div>
 
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 12 }}>
+          <button className="r26-link" onClick={() => copy(weekText(wk, prog), "This week copied.")}>
+            Copy this week
+          </button>
+        </div>
+
         {next && (
-          <button className="r26-return" style={{ marginTop: 14 }} onClick={() => setPathWeek(next.n)}>
+          <button className="r26-return" style={{ marginTop: 10 }} onClick={() => setPathWeek(next.n)}>
             Move to Week {next.n} →
           </button>
+        )}
+      </section>
+
+      {/* Take the whole thing with you — your checkmarks and notes included. */}
+      <section className="r26-card">
+        <div className="r26-grouphead">Your curriculum</div>
+        <p style={{ fontSize: 12.5, color: C.sub, marginTop: 0 }}>
+          All {TOTAL_WEEKS} weeks as plain text, with everything you&rsquo;ve checked off and written.
+        </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <button className="r26-mini"
+            onClick={() => copy(fullPathText(data.pathProgress, wk.n), "Whole path copied.")}>
+            Copy the whole path
+          </button>
+          <button className="r26-mini"
+            onClick={() => { downloadText("2026-reset-path.txt", fullPathText(data.pathProgress, wk.n)); flash("Downloaded."); }}>
+            Download
+          </button>
+          <button className="r26-link" onClick={() => setShowText((s) => !s)}>
+            {showText ? "Hide text" : "Show as text"}
+          </button>
+        </div>
+        {copied && <p style={{ fontSize: 12.5, color: C.mossDeep, margin: "10px 0 0" }}>{copied}</p>}
+        {/* Always-works fallback: clipboard and downloads are both flaky on phones. */}
+        {showText && (
+          <textarea className="r26-text" readOnly rows={10} style={{ marginTop: 10, fontSize: 11, fontFamily: "monospace" }}
+            onFocus={(e) => e.target.select()}
+            value={fullPathText(data.pathProgress, wk.n)} />
         )}
       </section>
 

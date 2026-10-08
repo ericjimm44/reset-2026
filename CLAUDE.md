@@ -21,6 +21,7 @@ These were learned the hard way over many iterations. Changing them breaks the a
 - **Notifications must never scold.** The daily reminder is an open door, not a nag: no streak counts, no "you missed a day," no urgency. Copy lives in `scripts/send-reminder.mjs`.
 - **Ratings are optional.** Two rating systems exist on purpose: the daily 1–10s (6 metrics, quick, feed Trends) and the monthly scorecard (10 metrics, slower, on Path). Merging them adds friction that kills consistency.
 - **Trend weekly, not daily.** Trends shows weekly averages. Never surface a daily score as a judgment.
+- **The Path measures sequence, not schedule.** (Oct 2026 change.) No week dates, no "the calendar says Week N" nudge — a calendar is what manufactures "behind," and this path was always meant to run at the pace Jimmy can absorb. Week N is where he is because that's where he is. "Behind" must stay un-representable; don't reintroduce deadline math.
 - **Tone: calm, non-judgmental, no gamification.** No fire emojis, no streaks-lost shaming, no "you failed." The aesthetic is washi paper + sumi ink + moss green (Japanese minimal). The ensō ring is the signature.
 
 ## Personal context

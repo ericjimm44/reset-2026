@@ -15,6 +15,7 @@ import Guidance from "./components/screens/Guidance";
 import Why from "./components/screens/Why";
 import Settings from "./components/screens/Settings";
 import Overwhelmed from "./components/screens/Overwhelmed";
+import Behind from "./components/screens/Behind";
 import Trends from "./components/Trends";
 import Path from "./components/Path";
 import Log from "./components/Log";
@@ -190,9 +191,10 @@ export default function App() {
         )}
         {screen === "path" && (
           <Screen title="The Path" sub="One week at a time." onBack={goHome}>
-            <Path data={data} now={now} actions={pathActions} />
+            <Path data={data} now={now} actions={pathActions} onNav={setScreen} />
           </Screen>
         )}
+        {screen === "behind" && <Behind data={data} actions={pathActions} onBack={() => setScreen("path")} />}
         {screen === "log" && (
           <Screen title="Log" sub="What you finish, counted." onBack={goHome}>
             <Log logs={data.logs} today={tk} actions={logActions} />

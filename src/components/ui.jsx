@@ -6,16 +6,16 @@ import { ChevronLeft } from "./Icons";
   serif subline, and a full-width way home at the bottom.
   Each screen is a single moment — it should feel like one page of a journal.
 */
-export function Screen({ title, sub, onBack, children }) {
+export function Screen({ title, sub, onBack, backLabel = "Today", children }) {
   return (
     <div className="r26-screen">
-      <button className="r26-back" onClick={onBack}><ChevronLeft /> Today</button>
+      <button className="r26-back" onClick={onBack}><ChevronLeft /> {backLabel}</button>
       <div style={{ textAlign: "center", margin: "6px 0 18px" }}>
         <div className="r26-eyebrow" style={{ color: C.mossDeep }}>{title}</div>
         {sub && <div className="r26-caption" style={{ marginTop: 6 }}>{sub}</div>}
       </div>
       {children}
-      <button className="r26-return" onClick={onBack}>Back to Today</button>
+      <button className="r26-return" onClick={onBack}>Back to {backLabel}</button>
     </div>
   );
 }
